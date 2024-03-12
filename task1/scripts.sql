@@ -7,12 +7,12 @@ where t.user_id = 1
 -- Вибрати завдання за певним статусом.
 select *
 from tasks t 
-where t.status_id = 2
+where t.status_id = (select id from status where name = 'new');
 
 
 -- Оновити статус конкретного завдання.
 update tasks
-set status_id = 3
+set status_id = (select id from status where name = 'completed')
 where id = 19
 
 
@@ -33,7 +33,7 @@ values ('Create a report', 'Create a report of ... ', 1, 26)
 -- Отримати всі завдання, які ще не завершено
 select t.*
 from tasks t 
-where status_id <> 3
+where status_id <> (select id from status where name = 'completed');
 
 
 -- Видалити конкретне завдання.
@@ -72,17 +72,17 @@ from tasks t
 where t.description is null 
 
 
--- Вибрати користувачів та їхні завдання, які є у статусі
+-- Вибрати користувачів та їхні завдання, які є у статусі 'in progress'
 select t.user_id, u.fullname, u.email, t.id as task_id, t.title, t.description, t.status_id  
 from users u 
 inner join tasks t on t.user_id = u.id 
-where t.status_id = 2
+where t.status_id = (select id from status where name = 'in progress');
 
 
 -- Отримати користувачів та кількість їхніх завдань.
 select u.id, u.fullname, u.email, COUNT(t.id) as count_of_tasks
 from users u 
 left join tasks t on t.user_id = u.id 
-group by u.id, u.fullname, u.email 
+group by u.id, u.fullname, u.email;
 
 
